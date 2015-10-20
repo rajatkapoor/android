@@ -1,0 +1,34 @@
+{%extends "newbase.html"%}
+{% block pageHeading %}
+<h1>
+	
+List of Restaurants
+
+</h1>
+{% endblock %}
+{% block restaurantsListActive %}
+	class="active"
+{% endblock restaurantsListActive %}
+{% block title %}
+List of Restaurants
+	
+{% endblock title %}
+{% block mainContent %}
+<table class="table table-striped table-bordered">
+
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Number of Rooms</th>
+			</tr>
+		</thead>
+		<tbody>
+		 {%for r in restaurants%}
+			<tr>
+				<td><a href="/restaurant/{{r.id}}">{{r.name}}</a></td>
+				<td>{{r.rooms.count}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

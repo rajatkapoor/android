@@ -1,0 +1,1 @@
+        return '{"type":"'+this.tableType+'","xpos":"'+this.xpos+'","ypos":"'+this.ypos+'","name":"'+this.name+'","id":"'+this.id+'","rotation":"'+this.rotation+'","size":"'+this.size+'"}'

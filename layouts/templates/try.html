@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+	</head>
+	<body>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js" ></script>
+
+
+<script type="text/javascript">
+
+	var tables = JSON.parse('{{tables|safe}}');
+	var squares = (tables).filter(function(n,i){
+		return n.tableType=="SQ";
+	});
+	var jcircles = (tables).filter(function(n,i){
+		return n.tableType=="CI";
+	});
+	var vRect = (tables).filter(function(n,i){
+		return n.tableType=="VR";
+	});
+	var hRect = (tables).filter(function(n,i){
+		return n.tableType=="HR";
+	});
+	var svgContainer = d3.select("body").append("svg")
+                                    .attr("width", 200)
+                                    .attr("height", 200);
+	var circles = svgContainer.selectAll("circle")
+                          .data(jcircles)
+                          .enter()
+                          .append("circle");
+    var circleAttributes = circles
+                       .attr("cx", function (d) { return d.xpos; })
+                       .attr("cy", function (d) { return d.ypos; })
+                       .attr("r", function (d) { return d.size; })
+                       .style("fill", function(d) { return "blue"; });
+
+//  switch (shape.tableType){
+//     			case 'CI':
+//     				var draw = '<circle cx="'+shape.xpos+'" cy="'+shape.ypos+'" r="'+shape.size+'" fill="purple" />';
+//     				$('svg').append(draw);
+// 	    			console.log('circle');
+// 	    			break;
+//     			case 'SQ':
+// 			// <rect x = "25" y = "50" width = "150" height = "100" fill = "tomato" stroke = "lightgreen" stroke-width = "2" transform = "rotate(-45 100 100)"/>
+
+//     				var draw = '<rect x="'+shape.xpos+'" y="'+shape.ypos+'" width="'+shape.size+'" height="'+shape.size+'" fill="green" />';
+// 	    			console.log(draw);
+// 	    			// $('#svg').append(draw);
+
+    				
+// 	    			break;
+//     			case 'VR':
+// 	    			console.log('vertical rect');
+// 	    			break;
+// 	    		case 'HR':
+// 	    			console.log('Horizontal rect');
+// 	    			break;
+//     		}
+
+
+</script>
+</body>
+</html>
