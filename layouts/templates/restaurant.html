@@ -1,8 +1,8 @@
-{% extends "newbase.html" %}
+{% extends "base.html" %}
 {% block title %}
-Rooms in {{restaurant.name}}
+    Rooms in {{restaurant.name}}
 {% endblock %}
-{% block activeSideNavHome %}class="active"{% endblock %}
+{% block activeSideNavHome %}class="active"{% endblock %}<!-- make restaurants tab active in top nav -->
 
 {% block pageHeading %}
 <div class="col-lg-12">
@@ -13,33 +13,32 @@ Rooms in {{restaurant.name}}
 {% endblock %}
 
 {% block mainContent %}
-
-{%for room in rooms%}
-
-    <div class="col-lg-4 col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-cubes fa-5x"></i>
-                    </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">{{room.name}}</div>
-                        <div>capacity {{capacity}}Seater</div>
+    {%for room in rooms%}<!-- iterating over rooms, creating a panel for each -->
+        <div class="col-lg-4 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-cubes fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{room.name}}</div>
+                            <div>capacity {{capacity}}Seater</div><!-- todo -->
+                        </div>
                     </div>
                 </div>
+                <a href="room/{{room.id}}">
+                    <div class="panel-footer">
+                        <span class="pull-left">View Layout</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
-            <a href="room/{{room.id}}">
-                <div class="panel-footer">
-                    <span class="pull-left">View Layout</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
-            </a>
         </div>
-    </div>
-{%endfor%}
-<div class="col-lg-4 col-md-6">
+    {%endfor%}
+    <!-- Add room panel -->
+    <div class="col-lg-4 col-md-6">
         <div class="panel panel-success">
             <div class="panel-heading">
                 <div class="row">
@@ -47,8 +46,7 @@ Rooms in {{restaurant.name}}
                         <i class="fa fa-cubes fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <a href="restaurant/{{restaurant.id}}/room/add/"></a><div class="huge">Add Room</div>
-                        
+                        <a href="restaurant/{{restaurant.id}}/room/add/"></a><div class="huge">Add Room</div><!-- link to add room endpoint -->
                     </div>
                 </div>
             </div>
@@ -61,7 +59,6 @@ Rooms in {{restaurant.name}}
             </a>
         </div>
     </div>
-
 {% endblock %}
 
 

@@ -1,15 +1,15 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-# Create your models here
 class Restaurant(models.Model):
-    """Restaurant Model """
+    #Restaurant Model
     name = models.CharField(max_length=1000)
     rooms = models.ManyToManyField('Room', blank = True)
     def __unicode__(self):
         return self.name
 
 class Room(models.Model):
+    #Room model
     name = models.CharField(max_length=1000)
     tables = models.ManyToManyField('Table', blank = True)
     def __unicode__(self):
@@ -35,4 +35,5 @@ class Table(models.Model):
         ]
      )
     def __unicode__(self):
+        #The unicode representation of Table object is JSON Parse-able by Javascript
         return '{"type":"'+self.tableType+'","xpos":"'+str(self.xpos)+'","ypos":"'+str(self.ypos)+'","name":"'+str(self.name)+'","id":"'+str(self.id)+'","rotation":"'+str(self.rotation)+'","size":"'+str(self.size)+'"}'

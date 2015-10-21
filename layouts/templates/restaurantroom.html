@@ -1,6 +1,6 @@
-{% extends "newbase.html" %}
+{% extends "base.html" %}
 {% block title %}
-{{room.name}} | {{restaurant.name}}
+    {{room.name}} | {{restaurant.name}}
 {% endblock %}
 {% block head %}
     {% load staticfiles %}
@@ -8,118 +8,87 @@
 {% endblock head %}
 
 {% block pageHeading %}
-
     <h1>
         {{room.name}} <small>{{restaurant.name }}</small>
     </h1>
 {% endblock %}
 
-{% block side %}
-  <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6">
-             
-            <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableCircle()">
-                Circle
-            </button>
+{% block side %}<!-- filling the side block with all controls -->
+    <div class="container-fluid">
+        <!-- adding all butttons with their onclick listeners inline to add tables of corrsponding shape to canvas -->
+        <div class="row">
+            <div class="col-md-6">
+                <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableCircle()">
+                    Circle
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableSquare()">
+                    Square
+                </button>
+            </div>
         </div>
-        <div class="col-md-6">
-             
-            <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableSquare()">
-                Square
-            </button>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-6">
-             
-            <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableHRect()">
-                HRect
-            </button>
-        </div>
-        <div class="col-md-6">
-             
-            <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableVRect()">
-                VRect
-            </button>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <form class="form-inline">
-          <div class="form-group">
-            <label for="textBoxName" style="color:#FFFFFF;">Name of Table</label>
-            <input type="text" style="width:100%;" class="form-control" id="textBoxName" placeholder="Table">
-          </div><br><br>
-          <div class="form-group">
-            <label for="textBoxType" style="color:#FFFFFF;">Shape of Table</label>
-            <input type="text" style="width:100%;" class="form-control" id="textBoxType" placeholder="Shape">
-          </div><br><br>
-          <div class="form-group">
-            <label for="textBoxX" style="color:#FFFFFF;">X Position</label>
-            <input type="text" style="width:100%;" class="form-control" id="textBoxX" placeholder="X Position">
-          </div><br><br>
-          <div class="form-group">
-            <label for="textBoxY" style="color:#FFFFFF;">Y Position</label>
-            <input type="text" style="width:100%;" class="form-control" id="textBoxY" placeholder="Y Position">
-          </div><br><br>
-          <div class="form-group">
-            <label for="textBoxSize" style="color:#FFFFFF;">Size of Table</label>
-            <input type="text" style="width:100%;" class="form-control" id="textBoxSize" placeholder="Size">
-          </div><br><br>
-          <div class="form-group">
-            <label for="textBoxRotation" style="color:#FFFFFF;">Rotation</label>
-            <input type="text" style="width:100%;" class="form-control" id="textBoxRotation" placeholder="In Degrees" maxlength="3">
-          </div>
-        </form>
         <br>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableHRect()">
+                    HRect
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button type="button" style="width:100%;" class="btn btn-default" onclick="createNewTableVRect()">
+                    VRect
+                </button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <form class="form-inline"><!-- form handling the display and editing of the properties of selected table -->
+              <div class="form-group">
+                <label for="textBoxName" style="color:#FFFFFF;">Name of Table</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxName" placeholder="Table">
+              </div><br><br>
+              <div class="form-group">
+                <label for="textBoxType" style="color:#FFFFFF;">Shape of Table</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxType" placeholder="Shape" readonly>
+              </div><br><br>
+              <div class="form-group">
+                <label for="textBoxX" style="color:#FFFFFF;">X Position</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxX" placeholder="X Position">
+              </div><br><br>
+              <div class="form-group">
+                <label for="textBoxY" style="color:#FFFFFF;">Y Position</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxY" placeholder="Y Position">
+              </div><br><br>
+              <div class="form-group">
+                <label for="textBoxSize" style="color:#FFFFFF;">Size of Table</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxSize" placeholder="Size">
+              </div><br><br>
+              <div class="form-group">
+                <label for="textBoxRotation" style="color:#FFFFFF;">Rotation</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxRotation" onchange="validateRotation()" placeholder="In Degrees" maxlength="3">
+              </div>
+            </form>
+            <br>
             <button class="btn btn-success" id="buttonUpdate" style="width:100%;" onclick="updateTable()">Update</button>
-
-    
-</div>
-
+        </div>
+    </div>
 {% endblock %}
 
-
-{% block mainContent %}
-    
+{% block mainContent %}    
     <div>
-        <canvas id="canvasMain" width="1175" height="600" style="border: 1px solid #666666"></canvas>
+        <canvas id="canvasMain" width="1175" height="500" style="border: 1px solid #666666"></canvas>
     </div>
-
 {% endblock %}
 
 {% block script %}
-    $( document ).ready(function() {
-        tt=[];
-        
+    $( document ).ready(function() {        
         {% for t in tables %}
             tab=JSON.parse('{{t|safe}}');
             addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10), tab.id);
         {% endfor %}
-        
         initCanvas();
-        $('#buttonUpdate').click(function(){
-            var senddata = "";
-            tables.forEach(function(i,e){
-            console.log(i.toJSON());
-                senddata+=(i.toJSON()+"|");
-            });
-            $.ajax({
-                type: "GET",
-                url: "update/",
-                dataType: 'text',
-                contentType: 'application/json',
-                success: function (msg) {
-                   console.log(msg)
-                },
-                data:'data='+senddata,
-            });
-        });
     });
-
-
 {% endblock %}
 
 

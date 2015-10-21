@@ -1,20 +1,21 @@
-from django.shortcuts import render
+# django specific imports
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, JsonResponse,HttpResponseRedirect
 from django.core import serializers
 from django.template import Context, Template
-from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 
-
+# models 
 from layouts.models import Restaurant, Room, Table
-# Create your views here.
-import simplejson,json
+
+# python imports
+import json
 
 def restaurantList(request):
     restaurants = Restaurant.objects.all()
     return render_to_response('restaurantslist.html', Context({'restaurants':restaurants}))
 
-def restaurant(request,restID):
+def restaurant(request,restID):# params taken from url, look at urls.py
     restaurant = Restaurant.objects.get(id = restID)
     rooms = restaurant.rooms.all()
     return render_to_response('restaurant.html',Context({'restaurant':restaurant,'rooms':rooms}))
@@ -23,56 +24,56 @@ def restaurantRoom(request, restID, roomID):
     restaurant = Restaurant.objects.get(id = restID)
     room = Room.objects.get(id = roomID)
     tables = room.tables.all()
-    #tlist = serializers.serialize('json', room.tables.all())
-    # tlist = json.dumps(room.tables.values())
-    # return HttpResponse(tables)
-    # return JsonResponse(tables,safe=False)
     print "tables = ",tables
     return render_to_response('restaurantroom.html',Context({'room':room,'restaurant':restaurant,'tables':tables}))
 
-def addRoomToRestaurant(request,restID):
+def addRoomToRestaurant(request,restID):#endpoint for adding room
     restaurant = Restaurant.objects.get(id = restID)
-
     room = Room(name = "Room"+str(restaurant.rooms.count()))
     room.save() 
     restaurant.rooms.add(room)
     restaurant.save()
     return HttpResponseRedirect('/restaurant/'+str(restaurant.id)+'/room/'+str(room.id)+'/')
 
+# This website is protected form CSRF attacks
+# This decorator exempts this endpoint from being protected from csrf attacks 
+# This had to be done to make this url accessible through ajax
 @csrf_exempt
 def roomUpdate(request,restID,roomID):
-    tables = request.GET['data'].split('|')[:-1]
+    tables = request.GET['data'].split('|')[:-1]# table data recieved as text with '|' separating diff tables
     restaurant = Restaurant.objects.get(id = restID)
     room = Room.objects.get(id = roomID)
     for t in tables:
-        data = json.loads(t)
-        print data
+        data = json.loads(t)# generating python dict from json parse-able string 
+        # print data
         uid = data['id']
         shape =  data['type']
         name = data['name']
-        xpos = data['xpos']
-        ypos = data['ypos']
+        xpos = data['x']
+        ypos = data['y']
         size = data['size']
         rotation = data['rotation']
         shape = data['type']
-        if (uid!="null"):
+        try:# to see if table with the same id exists already then update that table
             table = Table.objects.get(id = int(uid))
-        else:
+        except:# create new table otherwise
             table = Table()
+        # setting recieved values to table 
         table.name = name
         table.xpos = xpos
         table.ypos = ypos
         table.size = size
         table.rotation = rotation
         table.tableType = shape
-        print "table",table
         table.save()
-        print "saved"
-
-        print "saving table to room"
-        room.tables.add(table)
+        room.tables.add(table)# saving table to room
         room.save()
-    return HttpResponse("Success")
+    # send back updated table data
+    updatedTables = room.tables.all()
+    data = ""
+    for t in updatedTables:
+        data+=(str(t)+'|')
+    return HttpResponse(data[:-1])
 
 def trial(request):
     return render_to_response('trial.html')

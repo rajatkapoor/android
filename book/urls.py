@@ -19,13 +19,13 @@ from layouts.views import restaurantList,restaurant,restaurantRoom,trial,addRoom
 
 urlpatterns = [
     url(r'^home/$', restaurantList),
-
     url(r'^restaurants/$', restaurantList),
-    url(r'^restaurant/(\d+)/$', restaurant),
-    url(r'^restaurant/(\d+)/room/(\d+)/$', restaurantRoom),
-    url(r'^restaurant/(\d+)/room/(\d+)/update/$', roomUpdate),
-    url(r'^restaurant/(\d+)/room/add/$', addRoomToRestaurant),
 
-    url(r'^trial/$', trial),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^restaurant/(\d+)/$', restaurant),# for one restaurant
+    url(r'^restaurant/(\d+)/room/(\d+)/$', restaurantRoom),# for room in a restaurant
+    url(r'^restaurant/(\d+)/room/(\d+)/update/$', roomUpdate),# for updating table info from canvas using ajax
+    url(r'^restaurant/(\d+)/room/add/$', addRoomToRestaurant),# add room endpoint
+
+    # url(r'^trial/$', trial),
+    url(r'^admin/', include(admin.site.urls)),# admin app endpoint
 ]

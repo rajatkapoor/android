@@ -1,22 +1,20 @@
-{%extends "newbase.html"%}
+{%extends "base.html"%}
 {% block pageHeading %}
-<h1>
-	
-List of Restaurants
-
-</h1>
+	<h1>
+	List of Restaurants
+	</h1>
 {% endblock %}
 
 {% block restaurantsListActive %}
 	class="active"
 {% endblock restaurantsListActive %}
-{% block title %}
-List of Restaurants
-	
-{% endblock title %}
-{% block mainContent %}
-<table class="table table-striped table-bordered">
 
+{% block title %}
+	List of Restaurants	
+{% endblock title %}
+
+{% block mainContent %}
+	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -24,12 +22,12 @@ List of Restaurants
 			</tr>
 		</thead>
 		<tbody>
-		 {%for r in restaurants%}
+		{%for r in restaurants%} <!-- iterating over restaurants and creating a row of table for each -->
 			<tr>
 				<td><a href="/restaurant/{{r.id}}">{{r.name}}</a></td>
 				<td>{{r.rooms.count}}</td>
 			</tr>
-			{% endfor %}
+		{% endfor %}
 		</tbody>
 	</table>
 {% endblock %}
