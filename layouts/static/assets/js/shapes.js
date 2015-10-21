@@ -106,7 +106,7 @@ TableClass.prototype =
                 context.lineWidth = selectionBorderWidth;
                 //context.strokeRect(this.x - this.radius, this.y - this.radius, 2 * this.radius, 2 * this.radius);
                 context.strokeRect(this.x-1, this.y-1, (2 * this.radius), (2 * this.radius)+1);
-                //this.generateCorners(); //compute and draw corners
+
             }
         }
         else // draw square, vrect,hrect using rect methods
@@ -120,7 +120,7 @@ TableClass.prototype =
                 context.strokeStyle = selectionColor;
                 context.lineWidth = selectionBorderWidth;
                 context.strokeRect(newx - 1, newy -1, this.width + 2, this.height + 2);
-                //this.generateCorners(); //compute and draw corners
+
             }
                 context.rotate(-this.rotation*Math.PI/180);// inverting rotation
         }
@@ -213,6 +213,7 @@ function initCanvas()// intialize canvas params and determine padding and offset
         styleBorderLeft = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10) || 0;
         styleBorderTop = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10) || 0;
     }
+
     setInterval(mainDraw, redrawInterval);// calling mainDraw every redraw interval millisecs
     // the function actually performs only when the refreshCanvas flag is set
 
@@ -227,7 +228,7 @@ function initCanvas()// intialize canvas params and determine padding and offset
     tempCanvas.onmousemove = mouseMoveEvent;
     tempCanvas.onmouseleave = mouseLeaveEvent;
 
-    // grids drawing
+    // drawing grids
     for (var x = 0; x <= canvasWidth; x += gridSize) {
         context.moveTo(x, 0);
         context.lineTo(x, canvasHeight);
@@ -252,12 +253,11 @@ function clearCanvas(context)// clear the canvas and redraw grid
         context.moveTo(0, 0.5 + x);
         context.lineTo(canvasWidth, 0.5 + x);
     }
-
     context.strokeStyle = gridColor;
     context.stroke();
 }
 
-function mainDraw()
+function mainDraw()// drawing funciton which is called repetitively
 {
     if (refreshCanvas == true)
     {
@@ -275,7 +275,7 @@ function mainDraw()
 //     console.log(e);
 // }
 
-function mouseMoveEvent(e)
+function mouseMoveEvent(e)// handles mouse move on canvas
 {
     if (isDrag)// if this motion is drag
     {
@@ -301,7 +301,7 @@ function mouseMoveEvent(e)
     }
 }
 
-function mouseDownEvent(e)
+function mouseDownEvent(e)// handles mouse down on canvas
 {
     getMouse(e);
     clearCanvas(tempContext);
@@ -350,14 +350,15 @@ function mouseDownEvent(e)
     enableRefresh();// set the canvas to refresh
 }
 
-function mouseUpEvent()
+function mouseUpEvent()// handles mouse up on canvas
 {
     isDrag = false;// unset the drag flag
     isResize = false;// unset resize
     canvas.style.cursor = 'auto';// set the cursor to normal
 }
 
-function mouseLeaveEvent() {
+function mouseLeaveEvent()  // handles mouse leave
+{
     isDrag = false;
     isResize = false;
     canvas.style.cursor = 'auto';// set the cursor to normal
@@ -389,23 +390,28 @@ function getMouse(e)// set the update mouse coordinates (on the canvas) on mouse
     mouseX = e.pageX - elementOffsetX;
     mouseY = e.pageY - elementOffsetY
 }
+
 // name, x, y, type, size, rotation
 function createNewTableCircle()
 {
     addTable('Circle Table '+tables.length, 90, 90, 'CI', 100, 0);
 }
+
 function createNewTableSquare()
 {
     t = addTable('Square Table '+tables.length, 90, 90, 'SQ', 100, 0);
 }
+
 function createNewTableVRect()
 {
     t = addTable('Vertical Table '+tables.length, 90, 90, 'VR', 100, 0);
 }
+
 function createNewTableHRect()
 {
     t = addTable('Horizontal Table '+tables.length, 90, 90, 'HR', 100, 0);
 }
+
 function showProperties(table)// function to set the textboxes to show the properties of the selected tables
 {
     if(table === '')
@@ -503,6 +509,7 @@ function updateTable() // on the click of update button
     enableRefresh();
 
 }
+
 function transformedCoords(mouseX,mouseY,obj)// generated transformed coords of the passed coords according to the rotation of the object passed
 {
     var angle = (obj.rotation*-1) * Math.PI / 180;   
@@ -515,6 +522,7 @@ function transformedCoords(mouseX,mouseY,obj)// generated transformed coords of 
         y : Math.ceil(newy)
     };
 }
+
 function validateRotation()// function to make sure the rotation val is in 0 to 90
 {
     rot = parseInt(document.getElementById('textBoxRotation').value,10);
