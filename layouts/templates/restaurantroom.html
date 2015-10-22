@@ -60,23 +60,23 @@
               <div class="form-group">
                 <label for="textBoxName" >Name of Table</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxName" placeholder="Table">
-              </div><br><br>
+              </div><br>
               <div class="form-group">
                 <label for="textBoxType" >Shape of Table</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxType" placeholder="Shape" readonly>
-              </div><br><br>
+              </div><br>
               <div class="form-group">
                 <label for="textBoxX" >X Position</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxX" placeholder="X Position">
-              </div><br><br>
+              </div><br>
               <div class="form-group">
                 <label for="textBoxY" >Y Position</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxY" placeholder="Y Position">
-              </div><br><br>
+              </div><br>
               <div class="form-group">
                 <label for="textBoxSize" >Size of Table</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxSize" placeholder="Size">
-              </div><br><br>
+              </div><br>
               <div class="form-group">
                 <label for="textBoxRotation" >Rotation</label>
                 <div class="container-fluid">
@@ -89,6 +89,10 @@
                 </div>  
                 <input type="text" style="width:100%;" class="form-control" id="textBoxRotation" onchange="validateRotation()" placeholder="In Degrees" maxlength="3">
               </div>
+              <div class="form-group">
+                <label for="textBoxChairs" ># Chairs</label>
+                <input type="text" style="width:100%;" class="form-control" id="textBoxChairs" placeholder="Size">
+              </div><br>
             </form>
             <br>
             <button class="btn btn-success" id="buttonUpdate" style="width:100%;" onclick="updateTable()">Update</button>
@@ -106,7 +110,7 @@
     $( document ).ready(function() {        
         {% for t in tables %}
             tab=JSON.parse('{{t|safe}}');
-            addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10), tab.id);
+            addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10),parseInt(tab.chairs,10), parseInt(tab.id,10));
         {% endfor %}
         initCanvas();
     });

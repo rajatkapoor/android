@@ -34,6 +34,17 @@ class Table(models.Model):
             MinValueValidator(0)
         ]
      )
+    chairs = models.IntegerField(default=1)
     def __unicode__(self):
         #The unicode representation of Table object is JSON Parse-able by Javascript
-        return '{"type":"'+self.tableType+'","xpos":"'+str(self.xpos)+'","ypos":"'+str(self.ypos)+'","name":"'+str(self.name)+'","id":"'+str(self.id)+'","rotation":"'+str(self.rotation)+'","size":"'+str(self.size)+'"}'
+        return '{"type":"'+self.tableType\
+        +'","xpos":"'+str(self.xpos)\
+        +'","ypos":"'+str(self.ypos)\
+        +'","name":"'+str(self.name)\
+        +'","id":"'+str(self.id)\
+        +'","rotation":"'+str(self.rotation)\
+        +'","size":"'+str(self.size)\
+        +'","chairs":"'+str(self.chairs)\
+        +'"}'
+
+

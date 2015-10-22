@@ -71,7 +71,7 @@ CornerClass.prototype =
     }
 };
 
-function TableClass(name,type,x,y,size,rotation)
+function TableClass(name,type,x,y,size,rotation,chairs)
 {
     this.name = typeof name !== 'undefined' ? name : "table";
     this.type = typeof type !== 'undefined' ? type : ""; // 0 FOR CIRCLE, 1 FOR RECTANGLE
@@ -85,6 +85,7 @@ function TableClass(name,type,x,y,size,rotation)
     this.id = null; // primary key of table in DB
     this.newx = 0;// to keep track of new coords after rotation
     this.newy = 0;
+    this.chairs = typeof chairs !== 'undefined' ? chairs:1;
 
 }
 TableClass.prototype =
@@ -197,7 +198,14 @@ TableClass.prototype =
     },
     toJSON: function()// get a clean json repr of the table to send to the backend
     {
-        return '{"type":"'+this.type+'","x":"'+this.x+'","y":"'+this.y+'","name":"'+this.name+'","id":"'+this.id+'","rotation":"'+this.rotation+'","size":"'+this.size+'"}';
+        return '{"type":"'+this.type+
+        '","x":"'+this.x+
+        '","y":"'+this.y+
+        '","name":"'+this.name+
+        '","id":"'+this.id+
+        '","rotation":"'+this.rotation+
+        '","size":"'+this.size+
+        '","chairs":"'+this.chairs+'"}';
     },
     generateCorners: function()// funciton to generate corners of the table and store it in the corners array
     {// generating only one now
@@ -226,13 +234,17 @@ TableClass.prototype =
             context.fillStyle = fillColor;
             context.strokeStyle = selectionColor;
         }
+    },
+    generateChairs: function()
+    {
+        return;
     }
 };
 
 
-function addTable(name, x, y, type, size, rotation,id)// to add a table to tables array
+function addTable(name, x, y, type, size, rotation,chairs,id)// to add a table to tables array
 {
-    var table = new TableClass(name, type, x, y, size, rotation);
+    var table = new TableClass(name, type, x, y, size, rotation,chairs);
     table.id = typeof id !== 'undefined' ? id : null;
     table.updateSizes();
     tables.push(table);
@@ -515,22 +527,22 @@ function getMouse(e)// set the update mouse coordinates (on the canvas) on mouse
 // name, x, y, type, size, rotation
 function createNewTableCircle()
 {
-    addTable('CT'+tables.length, 90, 90, 'CI', 100, 0);
+    addTable('CT'+tables.length, 90, 90, 'CI', 100, 0, 1);
 }
 
 function createNewTableSquare()
 {
-    t = addTable('ST'+tables.length, 90, 90, 'SQ', 100, 0);
+    t = addTable('ST'+tables.length, 90, 90, 'SQ', 100, 0, 1);
 }
 
 function createNewTableVRect()
 {
-    t = addTable('VT'+tables.length, 90, 90, 'VR', 100, 0);
+    t = addTable('VT'+tables.length, 90, 90, 'VR', 100, 0, 1);
 }
 
 function createNewTableHRect()
 {
-    t = addTable('HT'+tables.length, 90, 90, 'HR', 100, 0);
+    t = addTable('HT'+tables.length, 90, 90, 'HR', 100, 0, 1);
 }
 
 function showProperties(table)// function to set the textboxes to show the properties of the selected tables
@@ -543,6 +555,7 @@ function showProperties(table)// function to set the textboxes to show the prope
         document.getElementById('textBoxRotation').value = "--";
         document.getElementById('textBoxType').value = "--";
         document.getElementById('textBoxName').value = "--";
+        document.getElementById('textBoxChairs').value = "--";
     }
     else
     {
@@ -552,6 +565,7 @@ function showProperties(table)// function to set the textboxes to show the prope
         document.getElementById('textBoxY').value = table.y;
         document.getElementById('textBoxSize').value = table.size;
         document.getElementById('textBoxRotation').value = table.rotation;
+        document.getElementById('textBoxChairs').value = table.chairs;
         switch(table.type)
         {
             case "CI":
@@ -599,6 +613,7 @@ function updateTable() // on the click of update button
         }
         selectedTable.type = shape;
         selectedTable.rotation = parseInt(document.getElementById('textBoxRotation').value,10);
+        selectedTable.chairs = parseInt(document.getElementById('textBoxChairs').value,10);
         selectedTable.updateSizes();
     }
     // sending data to backend and recieving back the updated data with the ids attached
@@ -620,7 +635,7 @@ function updateTable() // on the click of update button
                     for (i=0;i <= m.length-1;i++)
                     {
                         tab = JSON.parse(m[i]);
-                        addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10), tab.id);
+                        addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10), tab.chairs, tab.id);
                     }
                     // console.log(tables); //DEBUG
                     enableRefresh();

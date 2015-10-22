@@ -65,6 +65,7 @@ def roomUpdate(request,restID,roomID):
         size = data['size']
         rotation = data['rotation']
         shape = data['type']
+        chairs = data['chairs']
         try:# to see if table with the same id exists already then update that table
             table = Table.objects.get(id = int(uid))
         except:# create new table otherwise
@@ -76,6 +77,7 @@ def roomUpdate(request,restID,roomID):
         table.size = size
         table.rotation = rotation
         table.tableType = shape
+        table.chairs = chairs
         table.save()
         room.tables.add(table)# saving table to room
         room.save()
