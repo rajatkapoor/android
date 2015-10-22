@@ -11,23 +11,34 @@ from layouts.models import Restaurant, Room, Table
 # python imports
 import json
 
-def restaurantList(request):
+# List of all the restaurants present
+def restaurantList(request): 
     restaurants = Restaurant.objects.all()
     return render_to_response('restaurantslist.html', Context({'restaurants':restaurants}))
 
-def restaurant(request,restID):# params taken from url, look at urls.py
+# list the rooms inside the restaurant with id = restID
+def restaurant(request,restID):
     restaurant = Restaurant.objects.get(id = restID)
     rooms = restaurant.rooms.all()
     return render_to_response('restaurant.html',Context({'restaurant':restaurant,'rooms':rooms}))
 
-def restaurantRoom(request, restID, roomID):
+# to show the layout of the rest room with id = roomID in restaurant with id = restID
+def restaurantRoom(request, restID, roomID): 
     restaurant = Restaurant.objects.get(id = restID)
     room = Room.objects.get(id = roomID)
     tables = room.tables.all()
     print "tables = ",tables
     return render_to_response('restaurantroom.html',Context({'room':room,'restaurant':restaurant,'tables':tables}))
 
-def addRoomToRestaurant(request,restID):#endpoint for adding room
+@csrf_exempt
+def addRestaurant(request):
+    name = request.POST['name']
+    restaurant = Restaurant(name=name);
+    restaurant.save();
+    return HttpResponseRedirect('/restaurant/'+str(restaurant.id)+'/')
+
+
+def addRoomToRestaurant(request,restID):# endpoint for adding room, invoked on clicking the add room button
     restaurant = Restaurant.objects.get(id = restID)
     room = Room(name = "Room"+str(restaurant.rooms.count()))
     room.save() 

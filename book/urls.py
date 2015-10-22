@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from layouts.views import restaurantList,restaurant,restaurantRoom,trial,addRoomToRestaurant,roomUpdate
+from layouts.views import restaurantList,restaurant,restaurantRoom,trial,addRoomToRestaurant,roomUpdate, addRestaurant
 
 urlpatterns = [
     url(r'^home/$', restaurantList),
@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^restaurant/(\d+)/room/(\d+)/$', restaurantRoom),# for room in a restaurant
     url(r'^restaurant/(\d+)/room/(\d+)/update/$', roomUpdate),# for updating table info from canvas using ajax
     url(r'^restaurant/(\d+)/room/add/$', addRoomToRestaurant),# add room endpoint
+    url(r'^restaurant/add/$', addRestaurant),# add Restaurant
+
 
     # url(r'^trial/$', trial),
     url(r'^admin/', include(admin.site.urls)),# admin app endpoint

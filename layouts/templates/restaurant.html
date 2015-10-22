@@ -1,8 +1,9 @@
+<!-- this shows the list of the rooms in a rastaurant -->
 {% extends "base.html" %}
 {% block title %}
     Rooms in {{restaurant.name}}
 {% endblock %}
-{% block activeSideNavHome %}class="active"{% endblock %}<!-- make restaurants tab active in top nav -->
+<!--{% block activeSideNavHome %}class="active"{% endblock %} make restaurants tab active in top nav -->
 
 {% block pageHeading %}
 <div class="col-lg-12">
@@ -11,6 +12,12 @@
     </h1>
 </div>
 {% endblock %}
+{% block topNav %}
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="/restaurant/{{restaurant.id}}">{{restaurant.name}}</a></li>
+    </ul>
+{% endblock topNav %}
+
 
 {% block mainContent %}
     {%for room in rooms%}<!-- iterating over rooms, creating a panel for each -->
@@ -23,7 +30,7 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{room.name}}</div>
-                            <div>capacity {{capacity}}Seater</div><!-- todo -->
+                            <!-- <div>capacity {{capacity}}Seater</div>todo -->
                         </div>
                     </div>
                 </div>

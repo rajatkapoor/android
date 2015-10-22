@@ -1,3 +1,4 @@
+<!-- To show the the layout of the rooms -->
 {% extends "base.html" %}
 {% block title %}
     {{room.name}} | {{restaurant.name}}
@@ -12,6 +13,18 @@
         {{room.name}} <small>{{restaurant.name }}</small>
     </h1>
 {% endblock %}
+{% block style %}
+.fa-rotate-45 {-webkit-transform:rotate(45deg); -moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg); transform:rotate(45deg);} 
+.fa-rotate-135 {-webkit-transform:rotate(135deg); -moz-transform:rotate(135deg); -ms-transform:rotate(135deg); -o-transform:rotate(135deg); transform:rotate(135deg);} 
+{% endblock style %}
+{% block topNav %}
+    <ul class="nav navbar-nav">
+        <li><a href="/restaurant/{{restaurant.id}}">{{restaurant.name}}</a></li>
+    </ul>
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="/restaurant/{{restaurant.id}}/room/{{room.id}}">{{room.name}}</a></li>
+    </ul>
+{% endblock topNav %}
 
 {% block side %}<!-- filling the side block with all controls -->
     <div class="container-fluid">
@@ -42,30 +55,38 @@
             </div>
         </div>
         <br>
-        <div class="row">
+        <div class="row" style="color:#FFFFFF;" >
             <form class="form-inline"><!-- form handling the display and editing of the properties of selected table -->
               <div class="form-group">
-                <label for="textBoxName" style="color:#FFFFFF;">Name of Table</label>
+                <label for="textBoxName" >Name of Table</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxName" placeholder="Table">
               </div><br><br>
               <div class="form-group">
-                <label for="textBoxType" style="color:#FFFFFF;">Shape of Table</label>
+                <label for="textBoxType" >Shape of Table</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxType" placeholder="Shape" readonly>
               </div><br><br>
               <div class="form-group">
-                <label for="textBoxX" style="color:#FFFFFF;">X Position</label>
+                <label for="textBoxX" >X Position</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxX" placeholder="X Position">
               </div><br><br>
               <div class="form-group">
-                <label for="textBoxY" style="color:#FFFFFF;">Y Position</label>
+                <label for="textBoxY" >Y Position</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxY" placeholder="Y Position">
               </div><br><br>
               <div class="form-group">
-                <label for="textBoxSize" style="color:#FFFFFF;">Size of Table</label>
+                <label for="textBoxSize" >Size of Table</label>
                 <input type="text" style="width:100%;" class="form-control" id="textBoxSize" placeholder="Size">
               </div><br><br>
               <div class="form-group">
-                <label for="textBoxRotation" style="color:#FFFFFF;">Rotation</label>
+                <label for="textBoxRotation" >Rotation</label>
+                <div class="container-fluid">
+                        <div class="col-md-2" onclick="selectedTable.rotation=(selectedTable.rotation-45+180)%180;showProperties(selectedTable);enableRefresh()"><i class="fa fa-undo"></i></div>
+                        <div class="col-md-2" onclick="selectedTable.rotation=0;showProperties(selectedTable);enableRefresh()"><i class="fa fa-battery-empty fa-rotate-0"></i></div>
+                        <div class="col-md-2" onclick="selectedTable.rotation=90;showProperties(selectedTable);enableRefresh()"><i class="fa fa-battery-empty fa-rotate-90"></i></div>
+                        <div class="col-md-2" onclick="selectedTable.rotation=45;showProperties(selectedTable);enableRefresh()"><i class="fa fa-battery-empty fa-rotate-45"></i></div>
+                        <div class="col-md-2" onclick="selectedTable.rotation=135;showProperties(selectedTable);enableRefresh()"><i class="fa fa-battery-empty fa-rotate-135"></i></div>
+                        <div class="col-md-2" onclick="selectedTable.rotation=(selectedTable.rotation+45)%180;showProperties(selectedTable);enableRefresh()"><i class="fa fa-repeat"></i></div>
+                </div>  
                 <input type="text" style="width:100%;" class="form-control" id="textBoxRotation" onchange="validateRotation()" placeholder="In Degrees" maxlength="3">
               </div>
             </form>

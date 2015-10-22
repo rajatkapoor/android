@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- base template through whichh all the other pages inherit -->
+
 <html lang="en">
 <head>
     {% block head %}{% endblock head %}<!-- head block for django -->
@@ -11,8 +13,7 @@
     {% load staticfiles %}<!-- load static files, custom css,js -->
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+    
     <!-- Custom CSS loading from django served static files -->
     <link href="{% static "assets/css/sb-admin.css" %}" rel="stylesheet">
     <!-- style block to include text/css -->
@@ -36,6 +37,9 @@
                 <ul class="nav navbar-nav">
                     <li {% block restaurantsListActive %}{% endblock restaurantsListActive %}><a href="/restaurants/">Restaurants</a></li>
                 </ul>
+                {% block topNav %}
+                    
+                {% endblock topNav %}
             </div>
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav"><!-- side navbar -->
