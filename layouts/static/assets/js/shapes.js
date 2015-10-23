@@ -250,15 +250,6 @@ TableClass.prototype =
         }
         return corners;
     },
-    realCorners: function()
-    {
-        cc = [];
-        cc[0] = new CornerClass(this.newx+this.width,this.newy+this.height);
-        cc[1] = new CornerClass(this.newx,this.newy+this.height);
-        cc[2] = new CornerClass(this.newx,this.newy);
-        cc[3] = new CornerClass(this.newx+this.width,this.newy);
-        return cc;
-    },
     generateChairs: function()
     {
         if (this.type=="CI")
@@ -329,7 +320,7 @@ TableClass.prototype =
             //     x:newx,
             //     y:newy+this.height
             // };
-            cnrs = this.realCorners();
+            cnrs = this.generateCorners(draw=false);
             // console.log(cnrs);
             lines = [];
             lineA = chairsLine(cnrs[0],cnrs[1],chairsA);
