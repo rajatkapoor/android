@@ -1,7 +1,7 @@
 var tables = []; // keep track of all tables on canvas, array of table class
 
 var corners = []; // for keeping track of corners of selected table, array of corner class
-var cornerRadius = 4;
+var cornerRadius = 5;
 var cornerColor = "#000000";
 
 // canvas and drawing params
@@ -130,7 +130,7 @@ TableClass.prototype =
 
             }
             this.generateChairs();
-            enableRefresh();
+            // enableRefresh();
         }
         else // draw square, vrect,hrect using rect methods
         {
@@ -159,7 +159,7 @@ TableClass.prototype =
             this.generateChairs();
 
             context.rotate(-this.rotation*Math.PI/180);// inverting rotation
-            enableRefresh();
+            // enableRefresh();
 
         }
         
@@ -168,6 +168,7 @@ TableClass.prototype =
             this.generateCorners(); //compute and draw corners
             // enableRefresh();
         }
+        enableRefresh();
     },
     updateSizes: function ()// determine all the toher dimensions of the table on the basis of the size
     {
@@ -204,7 +205,7 @@ TableClass.prototype =
             this.newx = transformedCoords(this.x,this.y,this.rotation).x;
             this.newy = transformedCoords(this.x,this.y,this.rotation).y;
         }
-        enableRefresh();
+        // enableRefresh();
     },
     toJSON: function()// get a clean json repr of the table to send to the backend
     {
@@ -220,7 +221,7 @@ TableClass.prototype =
     generateCorners: function(draw)// funciton to generate corners of the table and store it in the corners array
     {// generating only one now
         draw = typeof draw !== 'undefined'?draw:true;
-        this.updateSizes();
+        // this.updateSizes();
         corners = [];
         // corners[0] = new CornerClass(this.newx+this.width,this.newy+this.height);
         corners[0] = new CornerClass(this.newx+this.width,this.newy+this.height);
@@ -348,7 +349,7 @@ TableClass.prototype =
             }
 
             // console.log(lineA);console.log(lineB);console.log(lineC);console.log(lineD);
-            console.log(lines);
+            // console.log(lines);
 
         }
     }
@@ -457,7 +458,9 @@ function mainDraw()// drawing funciton which is called repetitively
 {
     if (refreshCanvas == true)
     {
+        // console.log("refresh");
         clearCanvas(context);
+        clearCanvas(tempContext);
         for (var i = 0; i < tables.length; i++)
         {
             tables[i].updateSizes();
@@ -479,7 +482,7 @@ function mouseMoveEvent(e)// handles mouse move on canvas
     // console.log("Y "+mouseY);
     if (isDrag)// if this motion is drag
     {
-        getMouse(e);
+        // getMouse(e);
         selectedTable.x = mouseX - offsetX;
         selectedTable.y = mouseY - offsetY;
         enableRefresh();
@@ -488,7 +491,7 @@ function mouseMoveEvent(e)// handles mouse move on canvas
     }
     if(isResize)// if the motion is resize
     {
-        getMouse(e);
+        // getMouse(e);
         canvas.style.cursor = 'crosshair';
         // other techniques
         // // console.log("diff = "+(mouseX - oldX+mouseY - oldY));
@@ -535,7 +538,7 @@ function mouseMoveEvent(e)// handles mouse move on canvas
         
         selectedTable.size = oldSize+mouseX - oldX+mouseY - oldY; //working 
         selectedTable.updateSizes();
-        selectedTable.generateCorners();
+        // selectedTable.generateCorners();
         enableRefresh();
         showProperties(selectedTable);
         return;
@@ -544,17 +547,16 @@ function mouseMoveEvent(e)// handles mouse move on canvas
 
 function mouseDownEvent(e)// handles mouse down on canvas
 {
-    getMouse(e);
+    // getMouse(e);
     clearCanvas(tempContext);
     if (selectedTable!=='')// if there is a selected table then the person can drag the corner, hence check for click on corner
     {
-        console.log("mx "+mouseX);    //debug
-        console.log("my "+mouseY);    //debug
-        selectedTable.generateCorners();
+        // console.log("mx "+mouseX);    //debug
+        // console.log("my "+mouseY);    //debug
+        corners=selectedTable.generateCorners();
         for (i=0;i<4;i++)
         {
             corner = corners[i];
-            
             newx = transformedCoords(mouseX,mouseY,selectedTable.rotation).x;// generate the coords of mouse 
             newy = transformedCoords(mouseX,mouseY,selectedTable.rotation).y;// corresponding to the rotation of the selctedTable
             if (newx >= corner.x - cornerRadius && newx <= corner.x + cornerRadius && newy >= corner.y - cornerRadius && newy <= corner.y + cornerRadius)
@@ -610,7 +612,7 @@ function mouseDownEvent(e)// handles mouse down on canvas
     // if no table is selected
     showProperties('');
     selectedTable = '';// reset selected table
-    corners=[]; // empty corners
+    // corners=[]; // empty corners
     clearCanvas(tempContext);
     enableRefresh();// set the canvas to refresh
 }
@@ -752,41 +754,38 @@ function updateTable() // on the click of update button
     }
     // sending data to backend and recieving back the updated data with the ids attached
     var senddata = "";
-            tables.forEach(function(i,e){
-            // console.log(i.toJSON());
-                senddata+=(i.toJSON()+"|");
-            });
-            $.ajax({
-                type: "GET",
-                url: "update/",
-                dataType: 'text',
-                contentType: 'application/json',
-                success: function (msg) {
-                    m = msg;
-                    // console.log(msg); //DEBUG
-                    m = m.split('|');
-                    tables = [];
-                    for (i=0;i <= m.length-1;i++)
-                    {
-                        tab = JSON.parse(m[i]);
-                        addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10), tab.chairs, tab.id);
-                    }
-                    // console.log(tables); //DEBUG
-                    enableRefresh();
-                },
-                data:'data='+senddata,
-            });
-        selectedTable="";
-        showProperties(selectedTable);
+    tables.forEach(function(i,e){
+        senddata+=(i.toJSON()+"|");
+    });
+    $.ajax({
+        type: "GET",
+        url: "update/",
+        dataType: 'text',
+        contentType: 'application/json',
+        success: function (msg) {
+            m = msg;
+            // console.log(msg); //DEBUG
+            m = m.split('|');
+            tables = [];
+            for (i=0;i <= m.length-1;i++)
+            {
+                tab = JSON.parse(m[i]);
+                addTable(tab.name, parseInt(tab.xpos,10), parseInt(tab.ypos,10), tab.type, parseInt(tab.size,10), parseInt(tab.rotation,10), tab.chairs, tab.id);
+            }
+            // console.log(tables); //DEBUG
+            enableRefresh();
+        },
+        data:'data='+senddata,
+    });
+    selectedTable="";
+    showProperties(selectedTable);
     enableRefresh();
-
 }
 
 function transformedCoords(X,Y,rot,precise)// generated transformed coords of the passed coords according to the rotation of the object passed
 {
     precise = typeof precise !== 'undefined' ? precise : false;
-
-    var angle = (rot*-1) * Math.PI / 180;   
+    var angle = (rot*-1) * Math.PI / 180;
     var cos = Math.cos(angle);
     var sin = Math.sin(angle);
     var newx = X*cos - Y*sin; 
@@ -807,13 +806,6 @@ function transformedCoords(X,Y,rot,precise)// generated transformed coords of th
     }    
     
 }
-function inverseTranform(x,y,rot)
-{
-    var angle = (rot*-1) * Math.PI / 180;
-
-
-}
-
 function validateRotation()// function to make sure the rotation val is in 0 to 90
 {
     rot = parseInt(document.getElementById('textBoxRotation').value,10);

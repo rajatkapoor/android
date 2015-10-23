@@ -30,7 +30,9 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge">{{room.name}}</div>
-                            <!-- <div>capacity {{capacity}}Seater</div>todo -->
+                            <div><span id="tab{{room.id}}" style="color: white"></span> Tables</div>
+                            <div><span id="cap{{room.id}}" style="color: white"></span> Seater</div>
+
                         </div>
                     </div>
                 </div>
@@ -67,5 +69,22 @@
         </div>
     </div>
 {% endblock %}
+{% block script %}
 
+$( document ).ready(function(){
+    
+{% for room in rooms%}
+    var cap = 0;
+    $("#tab{{room.id}}")[0].innerText = {{room.tables.count}};
+    {% for t in room.tables.all %} 
+        cap+=parseInt({{t.chairs}},10);
+    {% endfor %}
+    $("#cap{{room.id}}")[0].innerText = cap;
+{% endfor %}
+
+    
+    console.log(cap);
+});
+    
+{% endblock script %}
 
