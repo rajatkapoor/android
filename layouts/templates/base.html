@@ -32,8 +32,10 @@
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="navbar-header"><!-- top navbar -->
-                <a class="navbar-brand" href="/home/">Zomato Book</a>
+            <div class="navbar-header" style='overflow:hidden;'><!-- top navbar -->
+                {# <a class="navbar-brand" href="/home/">Zomato Book</a> #}
+                <a class="navbar-brand" href="/home/"><img src="{% static "assets/img/zomato_book_logo.png" %}" style="max-width:230px;max-height:30px;"></a>
+
                 <ul class="nav navbar-nav">
                     <li {% block restaurantsListActive %}{% endblock restaurantsListActive %}><a href="/restaurants/">Restaurants</a></li>
                 </ul>

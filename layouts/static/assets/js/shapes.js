@@ -324,10 +324,27 @@ TableClass.prototype =
             cnrs = this.generateCorners(draw=false);
             // console.log(cnrs);
             lines = [];
-            lineA = chairsLine(cnrs[0],cnrs[1],chairsA);
-            lineB = chairsLine(cnrs[1],cnrs[2],chairsB);
-            lineC = chairsLine(cnrs[2],cnrs[3],chairsC);
-            lineD = chairsLine(cnrs[3],cnrs[0],chairsD);
+            if (this.type=="SQ")
+            {
+                lineA = chairsLine(cnrs[0],cnrs[1],chairsA);
+                lineB = chairsLine(cnrs[1],cnrs[2],chairsB);
+                lineC = chairsLine(cnrs[2],cnrs[3],chairsC);
+                lineD = chairsLine(cnrs[3],cnrs[0],chairsD);
+            }
+            if (this.type=="VR")
+            {
+                lineA = chairsLine(cnrs[0],cnrs[1],chairsA);
+                lineB = chairsLine(cnrs[1],cnrs[2],chairsC);
+                lineC = chairsLine(cnrs[2],cnrs[3],chairsB);
+                lineD = chairsLine(cnrs[3],cnrs[0],chairsD);
+            }
+            if (this.type=="HR")
+            {
+                lineA = chairsLine(cnrs[0],cnrs[1],chairsC);
+                lineB = chairsLine(cnrs[1],cnrs[2],chairsA);
+                lineC = chairsLine(cnrs[2],cnrs[3],chairsD);
+                lineD = chairsLine(cnrs[3],cnrs[0],chairsB);
+            }
             lines.push.apply(lines,lineA);
             lines.push.apply(lines,lineB);
             lines.push.apply(lines,lineC);
@@ -806,6 +823,7 @@ function transformedCoords(X,Y,rot,precise)// generated transformed coords of th
     }    
     
 }
+
 function validateRotation()// function to make sure the rotation val is in 0 to 90
 {
     rot = parseInt(document.getElementById('textBoxRotation').value,10);
