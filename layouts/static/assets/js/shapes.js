@@ -53,6 +53,12 @@ var cornerIndex=null;
 
 var m;// to store recieved ajax response
 
+var chairColor = "#006064";
+var chairDist = 10;
+var chairRadius = 5;
+
+
+
 function CornerClass(x,y)
 {
     this.x = typeof x !== 'undefined' ? x:0;
@@ -123,6 +129,7 @@ TableClass.prototype =
                 context.strokeRect(this.x-1, this.y-1, (2 * this.radius), (2 * this.radius)+1);
 
             }
+            this.generateChairs();
             enableRefresh();
         }
         else // draw square, vrect,hrect using rect methods
@@ -153,6 +160,7 @@ TableClass.prototype =
             enableRefresh();
 
         }
+        
         if (selectedTable===this)
         {    
         this.generateCorners(); //compute and draw corners
@@ -237,7 +245,48 @@ TableClass.prototype =
     },
     generateChairs: function()
     {
-        return;
+        if (this.type=="CI")
+        {
+            theta = Math.floor(360/this.chairs);
+            cx = this.x+this.radius;
+            cy = this.y+this.radius;
+            for (i=0;i<this.chairs;i++)
+            {
+                var chairx,chairy,gamma;
+                alpha = i * theta;
+                if (alpha=>0 && alpha<=90)
+                {
+                    gamma = alpha%90;
+                    chairx = cx+(this.radius+chairDist)*Math.sin(gamma/180*Math.PI);
+                    chairy = cy-(this.radius+chairDist)*Math.cos(gamma/180*Math.PI);
+                }
+                if (alpha>90 && alpha<=180)
+                {
+                    gamma = alpha-90;
+                    chairx = cx+(this.radius+chairDist)*Math.cos(gamma/180*Math.PI);
+                    chairy = cy+(this.radius+chairDist)*Math.sin(gamma/180*Math.PI);
+                }
+                if (alpha>180 && alpha<270)
+                {
+                    gamma = alpha-180;
+                    chairx = cx-(this.radius+chairDist)*Math.sin(gamma/180*Math.PI);
+                    chairy = cy+(this.radius+chairDist)*Math.cos(gamma/180*Math.PI);
+                }
+                if (alpha>270 && alpha<=360)
+                {
+                    gamma = alpha-270;
+                    chairx = cx-(this.radius+chairDist)*Math.cos(gamma/180*Math.PI);
+                    chairy = cy-(this.radius+chairDist)*Math.sin(gamma/180*Math.PI);
+                }
+                prevFill = context.fillStyle;
+                context.fillStyle = chairColor;
+                context.beginPath();
+                context.arc(chairx, chairy, chairRadius, 0, 2 * Math.PI);
+                context.closePath();
+                context.fill();
+                context.fillStyle=prevFill;
+            }
+        }
     }
 };
 
@@ -340,7 +389,7 @@ function mainDraw()// drawing funciton which is called repetitively
 
 function mouseMoveEvent(e)// handles mouse move on canvas
 {
-    // getMouse(e);
+    getMouse(e);
     // console.log("x "+mouseX);
     // console.log("Y "+mouseY);
     if (isDrag)// if this motion is drag
