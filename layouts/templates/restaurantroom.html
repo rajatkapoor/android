@@ -10,7 +10,7 @@
 
 {% block pageHeading %}
     <h1>
-        {{room.name}} <small>{{restaurant.name }}</small>
+        {{room.name}} <small><a href="/restaurant/{{restaurant.id}}">{{restaurant.name }}</a></small>
     </h1>
 {% endblock %}
 {% block style %}

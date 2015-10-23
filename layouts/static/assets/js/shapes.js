@@ -53,8 +53,8 @@ var cornerIndex=null;
 
 var m;// to store recieved ajax response
 
-var chairColor = "#006064";
-var chairDist = 10;
+var chairColor = "#00FF00";
+var chairDist = 0;
 var chairRadius = 5;
 
 
@@ -156,6 +156,8 @@ TableClass.prototype =
                 context.strokeRect(newx - 1, newy -1, this.width + 2, this.height + 2);
 
             }
+            this.generateChairs();
+
             context.rotate(-this.rotation*Math.PI/180);// inverting rotation
             enableRefresh();
 
@@ -163,8 +165,8 @@ TableClass.prototype =
         
         if (selectedTable===this)
         {    
-        this.generateCorners(); //compute and draw corners
-        enableRefresh();
+            this.generateCorners(); //compute and draw corners
+            // enableRefresh();
         }
     },
     updateSizes: function ()// determine all the toher dimensions of the table on the basis of the size
@@ -215,8 +217,9 @@ TableClass.prototype =
         '","size":"'+this.size+
         '","chairs":"'+this.chairs+'"}';
     },
-    generateCorners: function()// funciton to generate corners of the table and store it in the corners array
+    generateCorners: function(draw)// funciton to generate corners of the table and store it in the corners array
     {// generating only one now
+        draw = typeof draw !== 'undefined'?draw:true;
         this.updateSizes();
         corners = [];
         // corners[0] = new CornerClass(this.newx+this.width,this.newy+this.height);
@@ -224,24 +227,37 @@ TableClass.prototype =
         corners[1] = new CornerClass(this.newx,this.newy+this.height);
         corners[2] = new CornerClass(this.newx,this.newy);
         corners[3] = new CornerClass(this.newx+this.width,this.newy);
-        for (var i = 0; i < corners.length; i++)// drawing all corners
+        if (draw)
         {
-            context.fillStyle = cornerColor;
-            context.strokeStyle = null;
-            if (this.type=="CI")
+            for (var i = 0; i < corners.length; i++)// drawing all corners
             {
-                rot = 0;
+                context.fillStyle = cornerColor;
+                context.strokeStyle = null;
+                if (this.type=="CI")
+                {
+                    rot = 0;
+                }
+                else
+                {
+                    rot = this.rotation;
+                }
+                context.rotate(rot*Math.PI/180);
+                corners[i].draw(context);
+                context.rotate(-rot*Math.PI/180);
+                context.fillStyle = fillColor;
+                context.strokeStyle = selectionColor;
             }
-            else
-            {
-                rot = this.rotation;
-            }
-            context.rotate(rot*Math.PI/180);
-            corners[i].draw(context);
-            context.rotate(-rot*Math.PI/180);
-            context.fillStyle = fillColor;
-            context.strokeStyle = selectionColor;
         }
+        return corners;
+    },
+    realCorners: function()
+    {
+        cc = [];
+        cc[0] = new CornerClass(this.newx+this.width,this.newy+this.height);
+        cc[1] = new CornerClass(this.newx,this.newy+this.height);
+        cc[2] = new CornerClass(this.newx,this.newy);
+        cc[3] = new CornerClass(this.newx+this.width,this.newy);
+        return cc;
     },
     generateChairs: function()
     {
@@ -253,7 +269,7 @@ TableClass.prototype =
             for (i=0;i<this.chairs;i++)
             {
                 var chairx,chairy,gamma;
-                alpha = i * theta;
+                alpha =1+ i * theta;
                 if (alpha=>0 && alpha<=90)
                 {
                     gamma = alpha%90;
@@ -287,9 +303,87 @@ TableClass.prototype =
                 context.fillStyle=prevFill;
             }
         }
+        else
+        {
+            chairsA = Math.floor(this.chairs/4);
+            chairsB = Math.floor((this.chairs-chairsA)/3);
+            chairsC = Math.floor((this.chairs-chairsA-chairsB)/2);
+            chairsD = (this.chairs-chairsA-chairsB-chairsC);
+            newx = transformedCoords(this.x,this.y,this.rotation).x;// drawing is to be done at transformed coords
+            newy = transformedCoords(this.x,this.y,this.rotation).y;
+            // newx - 1, newy -1, this.width + 2, this.height + 2
+            // cnrs = [];
+            // cnrs[0] = {
+            //     x:newx,
+            //     y:newy
+            // };
+            // cnrs[1] = {
+            //     x:newx+this.width,
+            //     y:newy
+            // };
+            // cnrs[2] = {
+            //     x:newx+this.width,
+            //     y:newy+this.height
+            // };
+            // cnrs[3] = {
+            //     x:newx,
+            //     y:newy+this.height
+            // };
+            cnrs = this.realCorners();
+            // console.log(cnrs);
+            lines = [];
+            lineA = chairsLine(cnrs[0],cnrs[1],chairsA);
+            lineB = chairsLine(cnrs[1],cnrs[2],chairsB);
+            lineC = chairsLine(cnrs[2],cnrs[3],chairsC);
+            lineD = chairsLine(cnrs[3],cnrs[0],chairsD);
+            lines.push.apply(lines,lineA);
+            lines.push.apply(lines,lineB);
+            lines.push.apply(lines,lineC);
+            lines.push.apply(lines,lineD);
+            for (i=0;i<lines.length;i++)
+            {
+                ch = lines[i];
+                alert(ch.x+" "+ch.y);
+                prevFill = context.fillStyle;
+                // context.rotate(-this.rotation*Math.PI/180);
+                context.fillStyle = chairColor;
+                context.beginPath();
+                context.arc(ch.x, ch.y, chairRadius, 0, 2 * Math.PI);
+                context.closePath();
+                context.fill();
+                context.fillStyle=prevFill;
+                // context.rotate(this.rotation*Math.PI/180);
+
+            }
+
+            // console.log(lineA);console.log(lineB);console.log(lineC);console.log(lineD);
+            console.log(lines);
+
+        }
     }
 };
 
+function chairsLine(corner1, corner2, chairs)
+{
+    // console.log(corner1);
+    // console.log(corner2);
+    points = [];
+    end1 = {
+        x : corner1.x,
+        y : corner1.y
+    };
+    end2 = {
+        x : corner2.x,
+        y : corner2.y
+    };
+    // console.log(end1);
+    // console.log(end2);
+    for (i=1;i<=chairs;i++)
+    {
+        points.push({x : Math.floor(end1.x-(i/(chairs+1))*(end1.x-end2.x)),y : Math.floor(end1.y-(i/(chairs+1))*(end1.y-end2.y))}); 
+    }
+    return points;
+}
 
 function addTable(name, x, y, type, size, rotation,chairs,id)// to add a table to tables array
 {
@@ -463,8 +557,8 @@ function mouseDownEvent(e)// handles mouse down on canvas
     clearCanvas(tempContext);
     if (selectedTable!=='')// if there is a selected table then the person can drag the corner, hence check for click on corner
     {
-        // console.log("mx "+mouseX);    //debug
-        // console.log("my "+mouseY);    //debug
+        console.log("mx "+mouseX);    //debug
+        console.log("my "+mouseY);    //debug
         selectedTable.generateCorners();
         for (i=0;i<4;i++)
         {
@@ -697,17 +791,36 @@ function updateTable() // on the click of update button
 
 }
 
-function transformedCoords(mouseX,mouseY,rot)// generated transformed coords of the passed coords according to the rotation of the object passed
+function transformedCoords(X,Y,rot,precise)// generated transformed coords of the passed coords according to the rotation of the object passed
 {
+    precise = typeof precise !== 'undefined' ? precise : false;
+
     var angle = (rot*-1) * Math.PI / 180;   
     var cos = Math.cos(angle);
     var sin = Math.sin(angle);
-    var newx = mouseX*cos - mouseY*sin; 
-    var newy = mouseX*sin + mouseY*cos;
-    return {
-        x : Math.ceil(newx),
-        y : Math.ceil(newy)
-    };
+    var newx = X*cos - Y*sin; 
+    var newy = X*sin + Y*cos;
+    if (precise)
+    {
+        return {
+                x : newx,
+                y : newy
+                };
+    }    
+    else 
+    {
+        return {
+                x : Math.floor(newx),
+                y : Math.floor(newy)
+                };
+    }    
+    
+}
+function inverseTranform(x,y,rot)
+{
+    var angle = (rot*-1) * Math.PI / 180;
+
+
 }
 
 function validateRotation()// function to make sure the rotation val is in 0 to 90

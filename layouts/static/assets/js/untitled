@@ -1,0 +1,11 @@
+function compute(chairs)
+{
+	        chairsA = Math.floor(chairs/4);
+            chairsB = Math.floor((chairs-chairsA)/3);
+            chairsC = Math.floor((chairs-chairsA-chairsB)/2);
+            chairsD = (chairs-chairsA-chairsB-chairsC);
+            console.log(chairsA);
+            console.log(chairsB);
+            console.log(chairsC);
+            console.log(chairsD);
+}
